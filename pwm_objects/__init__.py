@@ -1,1 +1,1 @@
-__all__ = ['pwm_object', 'tower_pro_sg5010', 'tower_pro_sg90', 'led']
+__all__ = ['tower_pro_sg5010', 'tower_pro_sg90', 'led']
