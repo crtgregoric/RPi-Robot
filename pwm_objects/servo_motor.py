@@ -26,3 +26,5 @@ class ServoMotor(PWMObject):
 
         pwm_value = int(pwm_middle_value + (pwm_delta if not self.inverted else -pwm_delta))
         self.pwm_on(pwm_value)
+
+        return pwm_value

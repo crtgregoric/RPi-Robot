@@ -2,6 +2,7 @@
 
 from libraries.Adafruit_PWM_Servo_Driver import PWM
 from pwm_objects.tower_pro_sg5010 import TowerProSG5010
+from helpers.motor_position import MotorPosition
 import time
 
 
@@ -11,10 +12,10 @@ class TowerProSG5010Test():
     FREQUENCY = 50
     CHANNEL = 0
 
-    def __init__(self, inverted=False):
+    def __init__(self, position=MotorPosition.RIGHT):
         self.pwm = PWM(self.ADDRESS)
         self.pwm.setPWMFreq(self.FREQUENCY)
-        self.servo = TowerProSG5010(self.pwm, self.CHANNEL, inverted)
+        self.servo = TowerProSG5010(self.pwm, self.CHANNEL, position)
 
     def test_speed(self, speed):
         pwm_value = self.servo.set_speed(speed)
@@ -39,7 +40,7 @@ tp_test = TowerProSG5010Test()
 tp_test.test_speed_automatic()
 
 print('Left - inverted:')
-tp_test = TowerProSG5010Test(True)
+tp_test = TowerProSG5010Test(MotorPosition.LEFT)
 print('Automatic mode:\n')
 tp_test.test_speed_automatic()
 
