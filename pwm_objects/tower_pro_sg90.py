@@ -5,9 +5,9 @@ from servo_motor import ServoMotor
 
 class TowerProSG90(ServoMotor):
 
-    RIGHT_VALUE = 0
-    MIDDLE_VALUE = 0
-    LEFT_VALUE = 0
+    RIGHT_VALUE = 120
+    MIDDLE_VALUE = 307
+    LEFT_VALUE = 550
 
     ABS_MAX_ANGLE = 90.0
 
