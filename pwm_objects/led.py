@@ -21,3 +21,5 @@ class Led(PWMObject):
         pwm_value = int((self.ON_VALUE - self.OFF_VALUE) * (brightness / self.MAX_BRIGHTNESS))
         self.pwm_on(pwm_value)
         self.brightness = brightness
+
+        return pwm_value
