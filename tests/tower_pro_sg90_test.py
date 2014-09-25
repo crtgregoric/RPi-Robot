@@ -34,14 +34,18 @@ class TowerProSG90Test():
         self.test_angle(angle)
 
 
-print('Normal:')
+print('\nNormal:\n')
+
 tp_test = TowerProSG90Test()
+
 tp_test.test_angle_automatic()
 
-print('Inverted:')
+print('\nInverted:\n')
+
 tp_test = TowerProSG90Test(True)
-print('Automatic mode:\n')
+
+print('\nAutomatic mode:\n')
 tp_test.test_angle_automatic()
 
-print('Interactive mode:\n')
+print('\nInteractive mode:\n')
 tp_test.test_angle_interactive()

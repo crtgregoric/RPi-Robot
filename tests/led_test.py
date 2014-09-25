@@ -34,8 +34,8 @@ class LedTest():
 
 led_test = LedTest()
 
-print('Automatic mode:\n')
+print('\nAutomatic mode:\n')
 led_test.test_brightness_automatic()
 
-print('Interactive mode:\n')
+print('\nInteractive mode:\n')
 led_test.test_brightness_interactive()

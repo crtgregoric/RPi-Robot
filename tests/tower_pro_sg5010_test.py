@@ -35,14 +35,18 @@ class TowerProSG5010Test():
         self.test_speed(speed)
 
 
-print('Right - normal:')
+print('\nRight - normal:\n')
+
 tp_test = TowerProSG5010Test()
+
 tp_test.test_speed_automatic()
 
-print('Left - inverted:')
+print('\nLeft - inverted:\n')
+
 tp_test = TowerProSG5010Test(MotorPosition.LEFT)
-print('Automatic mode:\n')
+
+print('\nAutomatic mode:\n')
 tp_test.test_speed_automatic()
 
-print('Interactive mode:\n')
+print('\nInteractive mode:\n')
 tp_test.test_speed_interactive()
