@@ -22,5 +22,6 @@ class TowerProSG5010(ServoMotor):
 
     def set_speed(self, speed):
         self.speed = speed
-        pwm_value = self.set_pwm_value(self.BACKWARDS_VALUE, self.STOP_VALUE, self.FORWARD_VALUE, speed, self.ABS_MAX_SPEED)
+        pwm_value = self.set_pwm_value(self.BACKWARDS_VALUE, self.STOP_VALUE,
+                                       self.FORWARD_VALUE, speed, self.ABS_MAX_SPEED)
         return pwm_value

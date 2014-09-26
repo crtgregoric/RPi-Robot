@@ -19,20 +19,31 @@ class TowerProSG5010Test():
 
     def test_speed(self, speed):
         pwm_value = self.servo.set_speed(speed)
-        print('PWM right: {} PWM middle: {} PWM left: {} PWM value: {}'.format(self.servo.BACKWARDS_VALUE,
-                                                                               self.servo.STOP_VALUE,
-                                                                               self.servo.FORWARD_VALUE, pwm_value))
+        print('PWM right: {} PWM middle: {} PWM left: {} PWM value: {} Speed: {}'.format(self.servo.BACKWARDS_VALUE,
+                                                                                         self.servo.STOP_VALUE,
+                                                                                         self.servo.FORWARD_VALUE,
+                                                                                         pwm_value, speed))
 
     def test_speed_automatic(self):
         test_values = [100, 50, 0, -50, -100]
 
         for speed in test_values:
             self.test_speed(speed)
-            time.sleep(2)
+            time.sleep(4)
+
+    def test_speed_incremental(self):
+        for speed in range(101):
+            self.servo.set_speed(speed)
+
+            if speed % 10 == 0:
+                print('Speed :'.format(speed))
+
+            time.sleep(0.001)
 
     def test_speed_interactive(self):
-        speed = int(input('Speed: '))
-        self.test_speed(speed)
+        while True:
+            speed = int(input('Speed: '))
+            self.test_speed(speed)
 
 
 print('\nRight - normal:\n')
