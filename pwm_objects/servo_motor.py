@@ -21,7 +21,7 @@ class ServoMotor(PWMObject):
             self.pwm_off()
             return pwm_middle_value
 
-        elif input_value > 0 and self.continuous:
+        elif input_value > 0:
             delta = (pwm_max_value - pwm_middle_value)
 
         else:
