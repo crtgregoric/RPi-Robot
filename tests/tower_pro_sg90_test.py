@@ -15,15 +15,16 @@ class TowerProSG90Test():
     CHANNEL = 7
 
     def __init__(self, inverted=False):
+        self.pwm = None
         self.pwm = PWM(self.ADDRESS)
         self.pwm.setPWMFreq(self.FREQUENCY)
         self.servo = TowerProSG90(self.pwm, self.CHANNEL, inverted)
 
     def test_angle(self, angle):
         pwm_value = self.servo.set_angle(angle)
-        print('PWM right: {} PWM middle: {} PWM left: {} PWM value: {} Angle: {}'.format(self.servo.RIGHT_VALUE,
-                                                                                         self.servo.MIDDLE_VALUE,
-                                                                                         self.servo.LEFT_VALUE,
+        print('PWM right: {} PWM middle: {} PWM left: {} PWM value: {} Angle: {}'.format(self.servo.right_value,
+                                                                                         self.servo.middle_value,
+                                                                                         self.servo.left_value,
                                                                                          pwm_value, angle))
 
     def test_angle_automatic(self):
@@ -34,6 +35,7 @@ class TowerProSG90Test():
             time.sleep(2)
 
     def test_angle_incremental(self):
+        print('')
         for angle in range(-90, 91):
             self.servo.set_angle(angle)
 
@@ -48,7 +50,7 @@ class TowerProSG90Test():
             self.test_angle(angle)
 
 
-print('\nNormal:\n')
+print('Normal:\n')
 tp_test = TowerProSG90Test()
 
 tp_test.test_angle_automatic()
@@ -57,7 +59,7 @@ tp_test.test_angle_incremental()
 print('\nInverted:\n')
 tp_test = TowerProSG90Test(True)
 
-print('\nAutomatic mode:\n')
+print('Automatic mode:\n')
 tp_test.test_angle_automatic()
 tp_test.test_angle_incremental()
 print('\nInteractive mode:\n')

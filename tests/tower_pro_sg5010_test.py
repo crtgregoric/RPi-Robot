@@ -13,18 +13,23 @@ class TowerProSG5010Test():
 
     ADDRESS = 0x40
     FREQUENCY = 50
-    CHANNEL = 0
+    CHANNEL_LEFT = 0
+    CHANNEL_RIGHT = 15
 
-    def __init__(self, position=MotorPosition.RIGHT):
+    def __init__(self, position=MotorPosition.LEFT):
         self.pwm = PWM(self.ADDRESS)
         self.pwm.setPWMFreq(self.FREQUENCY)
-        self.servo = TowerProSG5010(self.pwm, self.CHANNEL, position)
+
+        if position == MotorPosition.LEFT:
+            self.servo = TowerProSG5010(self.pwm, self.CHANNEL_LEFT, position)
+        else:
+            self.servo = TowerProSG5010(self.pwm, self.CHANNEL_RIGHT, position)
 
     def test_speed(self, speed):
         pwm_value = self.servo.set_speed(speed)
-        print('PWM right: {} PWM middle: {} PWM left: {} PWM value: {} Speed: {}'.format(self.servo.BACKWARDS_VALUE,
-                                                                                         self.servo.STOP_VALUE,
-                                                                                         self.servo.FORWARD_VALUE,
+        print('PWM back: {} PWM stop: {} PWM forward: {} PWM value: {} Speed: {}'.format(self.servo.backwards_value,
+                                                                                         self.servo.stop_value,
+                                                                                         self.servo.forward_value,
                                                                                          pwm_value, speed))
 
     def test_speed_automatic(self):
@@ -35,13 +40,14 @@ class TowerProSG5010Test():
             time.sleep(4)
 
     def test_speed_incremental(self):
+        print('')
         for speed in range(101):
             self.servo.set_speed(speed)
 
             if speed % 10 == 0:
-                print('Speed :'.format(speed))
+                print('Speed : {}'.format(speed))
 
-            time.sleep(0.001)
+            time.sleep(0.1)
 
     def test_speed_interactive(self):
         while True:
@@ -49,18 +55,19 @@ class TowerProSG5010Test():
             self.test_speed(speed)
 
 
-print('\nRight - normal:\n')
-
+print('Left - normal:\n')
 tp_test = TowerProSG5010Test()
 
 tp_test.test_speed_automatic()
+tp_test.test_speed_incremental()
 
-print('\nLeft - inverted:\n')
+time.sleep(2)
 
-tp_test = TowerProSG5010Test(MotorPosition.LEFT)
+print('\nRight - inverted:\n')
+tp_test = TowerProSG5010Test(MotorPosition.RIGHT)
 
-print('\nAutomatic mode:\n')
+print('Automatic mode:\n')
 tp_test.test_speed_automatic()
-
+tp_test.test_speed_incremental()
 print('\nInteractive mode:\n')
 tp_test.test_speed_interactive()

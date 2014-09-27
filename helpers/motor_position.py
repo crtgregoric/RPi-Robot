@@ -3,5 +3,9 @@
 
 class MotorPosition():
 
-    RIGHT = 0
-    LEFT = 1
+    NONE = 0
+    RIGHT = 1
+    LEFT = 2
+
+    def __init__(self):
+        return
