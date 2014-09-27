@@ -16,6 +16,9 @@ class ServoMotor(PWMObject):
 
         pwm_delta = 0
 
+        if self.inverted:
+            input_value = -input_value
+
         if input_value > 0:
             pwm_delta = (pwm_max_value - pwm_middle_value) * (input_value / abs_max_input_value)
 
