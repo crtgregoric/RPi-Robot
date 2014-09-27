@@ -35,7 +35,7 @@ class LedTest():
             if brightness % 10 == 0:
                 print('Brightness: {}'.format(brightness))
 
-            time.sleep(0.0001)
+            time.sleep(0.01)
 
     def test_brightness_interactive(self):
         while True:
