@@ -1,5 +1,8 @@
 #!/usr/bin/python
 
+import sys
+sys.path.append("/home/pi/shared")
+
 from libraries.Adafruit_PWM_Servo_Driver import PWM
 from pwm_objects.tower_pro_sg5010 import TowerProSG5010
 from helpers.motor_position import MotorPosition

@@ -11,8 +11,10 @@ class TowerProSG90(ServoMotor):
 
     ABS_MAX_ANGLE = 90.0
 
+    CONTINUOUS = False
+
     def __init__(self, pwm, channel, inverted=False):
-        ServoMotor.__init__(self, pwm, channel, inverted)
+        ServoMotor.__init__(self, pwm, channel, self.CONTINUOUS, inverted)
         self.angle = 0
 
     def set_angle(self, angle):

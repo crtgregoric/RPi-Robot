@@ -12,11 +12,13 @@ class TowerProSG5010(ServoMotor):
 
     ABS_MAX_SPEED = 100.0
 
+    CONTINUOUS = False
+
     MOTOR_POSITION = MotorPosition.RIGHT
 
     def __init__(self, pwm, channel, position):
         inverted = True if position == MotorPosition.LEFT else False
-        ServoMotor.__init__(self, pwm, channel, inverted)
+        ServoMotor.__init__(self, pwm, channel, self.CONTINUOUS, inverted)
         self.MOTOR_POSITION = position
         self.speed = 0
 

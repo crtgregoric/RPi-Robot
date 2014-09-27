@@ -1,5 +1,8 @@
 #!/usr/bin/python
 
+import sys
+sys.path.append("/home/pi/shared")
+
 from libraries.Adafruit_PWM_Servo_Driver import PWM
 from pwm_objects.tower_pro_sg90 import TowerProSG90
 import time
@@ -28,7 +31,7 @@ class TowerProSG90Test():
 
         for angle in test_values:
             self.test_angle(angle)
-            time.sleep(4)
+            time.sleep(2)
 
     def test_angle_incremental(self):
         for angle in range(-90, 91):
@@ -56,5 +59,6 @@ tp_test = TowerProSG90Test(True)
 
 print('\nAutomatic mode:\n')
 tp_test.test_angle_automatic()
+tp_test.test_angle_incremental()
 print('\nInteractive mode:\n')
 tp_test.test_angle_interactive()

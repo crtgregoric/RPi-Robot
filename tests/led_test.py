@@ -1,5 +1,8 @@
 #!/usr/bin/python
 
+import sys
+sys.path.append("/home/pi/shared")
+
 from libraries.Adafruit_PWM_Servo_Driver import PWM
 from pwm_objects.led import Led
 import time
