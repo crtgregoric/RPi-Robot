@@ -6,6 +6,8 @@ sys.path.append("/home/pi/shared")
 from libraries.Adafruit_PWM_Servo_Driver import PWM
 from pwm_objects.tower_pro_sg5010 import TowerProSG5010
 from helpers.motor_position import MotorPosition
+from helpers.servo_data import TowerProSG5010RightData
+from helpers.servo_data import TowerProSG5010LeftData
 import time
 
 
@@ -16,14 +18,14 @@ class TowerProSG5010Test():
     CHANNEL_LEFT = 0
     CHANNEL_RIGHT = 15
 
-    def __init__(self, position=MotorPosition.LEFT):
+    def __init__(self, servo_data, position=MotorPosition.LEFT):
         self.pwm = PWM(self.ADDRESS)
         self.pwm.setPWMFreq(self.FREQUENCY)
 
         if position == MotorPosition.LEFT:
-            self.servo = TowerProSG5010(self.pwm, self.CHANNEL_LEFT, position)
+            self.servo = TowerProSG5010(self.pwm, self.CHANNEL_LEFT, servo_data, position)
         else:
-            self.servo = TowerProSG5010(self.pwm, self.CHANNEL_RIGHT, position)
+            self.servo = TowerProSG5010(self.pwm, self.CHANNEL_RIGHT, servo_data, position)
 
     def test_speed(self, speed):
         pwm_value = self.servo.set_speed(speed)
@@ -37,17 +39,17 @@ class TowerProSG5010Test():
 
         for speed in test_values:
             self.test_speed(speed)
-            time.sleep(4)
+            time.sleep(2)
 
     def test_speed_incremental(self):
         print('')
-        for speed in range(101):
+        for speed in range(-100, 101):
             self.servo.set_speed(speed)
 
             if speed % 10 == 0:
                 print('Speed : {}'.format(speed))
 
-            time.sleep(0.1)
+            time.sleep(0.05)
 
     def test_speed_interactive(self):
         while True:
@@ -56,7 +58,7 @@ class TowerProSG5010Test():
 
 
 print('Left - normal:\n')
-tp_test = TowerProSG5010Test()
+tp_test = TowerProSG5010Test(TowerProSG5010LeftData)
 
 tp_test.test_speed_automatic()
 tp_test.test_speed_incremental()
@@ -64,7 +66,7 @@ tp_test.test_speed_incremental()
 time.sleep(2)
 
 print('\nRight - inverted:\n')
-tp_test = TowerProSG5010Test(MotorPosition.RIGHT)
+tp_test = TowerProSG5010Test(TowerProSG5010RightData, MotorPosition.RIGHT)
 
 print('Automatic mode:\n')
 tp_test.test_speed_automatic()

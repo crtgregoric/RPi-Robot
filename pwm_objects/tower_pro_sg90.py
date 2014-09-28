@@ -1,18 +1,18 @@
 #!/usr/bin/python
 
 from servo_motor import ServoMotor
-from helpers.servo_data import TowerProSG90Data
 
 
 class TowerProSG90(ServoMotor):
 
-    def __init__(self, pwm, channel, inverted=False):
-        ServoMotor.__init__(self, pwm, channel, TowerProSG90Data.CONTINUOUS, inverted)
-        self.right_value = TowerProSG90Data.LOW_VALUE
-        self.middle_value = TowerProSG90Data.MID_VALUE
-        self.left_value = TowerProSG90Data.HIGH_VALUE
+    def __init__(self, pwm, channel, servo_data, inverted=False):
+        ServoMotor.__init__(self, pwm, channel, servo_data.CONTINUOUS, inverted)
 
-        self.abs_max_angle = TowerProSG90Data.ABS_MAX_UNIT
+        self.right_value = servo_data.LOW_VALUE
+        self.middle_value = servo_data.MID_VALUE
+        self.left_value = servo_data.HIGH_VALUE
+
+        self.abs_max_angle = servo_data.ABS_MAX_UNIT
 
         self.angle = 0
 

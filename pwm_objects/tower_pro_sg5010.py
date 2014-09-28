@@ -1,28 +1,21 @@
 #!/usr/bin/python
 
 from servo_motor import ServoMotor
-from helpers.servo_data import *
 from helpers.motor_position import MotorPosition
 
 
 class TowerProSG5010(ServoMotor):
 
-    def __init__(self, pwm, channel, position):
+    def __init__(self, pwm, channel, servo_data, position):
         inverted = True if position == MotorPosition.RIGHT else False
-        ServoMotor.__init__(self, pwm, channel, TowerProSG5010Data.CONTINUOUS, inverted)
+        ServoMotor.__init__(self, pwm, channel, servo_data.CONTINUOUS, inverted)
         self.motor_position = position
 
-        if self.motor_position == MotorPosition.LEFT:
-            self.backwards_value = TowerProSG5010LeftData.LOW_VALUE
-            self.stop_value = TowerProSG5010LeftData.MID_VALUE
-            self.forward_value = TowerProSG5010LeftData.HIGH_VALUE
+        self.backwards_value = servo_data.LOW_VALUE
+        self.stop_value = servo_data.MID_VALUE
+        self.forward_value = servo_data.HIGH_VALUE
 
-        elif self.motor_position == MotorPosition.RIGHT:
-            self.backwards_value = TowerProSG5010RightData.LOW_VALUE
-            self.stop_value = TowerProSG5010RightData.MID_VALUE
-            self.forward_value = TowerProSG5010RightData.HIGH_VALUE
-
-        self.abs_max_speed = TowerProSG5010Data.ABS_MAX_UNIT
+        self.abs_max_speed = servo_data.ABS_MAX_UNIT
         self.speed = 0
 
     def set_speed(self, speed):

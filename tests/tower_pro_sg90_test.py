@@ -5,6 +5,7 @@ sys.path.append("/home/pi/shared")
 
 from libraries.Adafruit_PWM_Servo_Driver import PWM
 from pwm_objects.tower_pro_sg90 import TowerProSG90
+from helpers.servo_data import TowerProSG90Data
 import time
 
 
@@ -14,11 +15,11 @@ class TowerProSG90Test():
     FREQUENCY = 50
     CHANNEL = 7
 
-    def __init__(self, inverted=False):
+    def __init__(self, servo_data, inverted=False):
         self.pwm = None
         self.pwm = PWM(self.ADDRESS)
         self.pwm.setPWMFreq(self.FREQUENCY)
-        self.servo = TowerProSG90(self.pwm, self.CHANNEL, inverted)
+        self.servo = TowerProSG90(self.pwm, self.CHANNEL, servo_data, inverted)
 
     def test_angle(self, angle):
         pwm_value = self.servo.set_angle(angle)
@@ -51,13 +52,13 @@ class TowerProSG90Test():
 
 
 print('Normal:\n')
-tp_test = TowerProSG90Test()
+tp_test = TowerProSG90Test(TowerProSG90Data)
 
 tp_test.test_angle_automatic()
 tp_test.test_angle_incremental()
 
 print('\nInverted:\n')
-tp_test = TowerProSG90Test(True)
+tp_test = TowerProSG90Test(TowerProSG90Data, True)
 
 print('Automatic mode:\n')
 tp_test.test_angle_automatic()

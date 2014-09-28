@@ -29,7 +29,7 @@ class LedTest():
 
         for brightness in test_values:
             self.test_brightness(brightness)
-            time.sleep(4)
+            time.sleep(2)
 
     def test_brightness_incremental(self):
         for brightness in range(101):
