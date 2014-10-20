@@ -13,20 +13,20 @@ from helpers.servo_data import TowerProSG5010RightData, TowerProSG5010LeftData, 
 
 class Robot():
 
-    ADDRESS = 0x40
+    I2C_ADDRESS = 0x40
     FREQUENCY = 50
 
     LEFT_MOTOR_CHANNEL = 0
     RIGHT_MOTOR_CHANNEL = 15
     CAMERA_MOTOR_CHANNEL = 7
 
-    LED1_CHANNEL = 6
+    LED1_CHANNEL = 1
 
     HOST_NAME = 'rpi.local'
     PORT_NUMBER = 1234
 
     def __init__(self):
-        pwm = PWM(self.ADDRESS)
+        pwm = PWM(self.I2C_ADDRESS)
         pwm.setPWMFreq(self.FREQUENCY)
 
         self.right_motor = TowerProSG5010(pwm, self.RIGHT_MOTOR_CHANNEL, TowerProSG5010RightData, MotorPosition.RIGHT)
@@ -39,11 +39,10 @@ class Robot():
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.bind((self.HOST_NAME, self.PORT_NUMBER))
         self.socket.listen(1)
-
         print('Ready.')
 
         (self.connection, self.client_address) = self.socket.accept()
-        print('Connected by: {}', self.client_address[0])
+        print('Connected by: {}'.format(self.client_address[0]))
 
     def main_loop(self):
         while True:
@@ -66,15 +65,17 @@ class Robot():
                     self.led1.set_brightness(value)
 
                 elif command[0] == '4':
-                    self.connection.close()
-                    self.socket.close()
                     break
 
             else:
-                self.connection.close()
-                self.socket.close()
                 break
+
+    def close_connection(self):
+        self.connection.close()
+        self.socket.close()
+        print('Connection closed.')
 
 
 robot = Robot()
 robot.main_loop()
+robot.close_connection()
