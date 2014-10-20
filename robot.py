@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 from libraries.Adafruit_PWM_Servo_Driver import PWM
+# from mock_objects.pwm_mock import PWM
 import socket
 
 from pwm_objects.tower_pro_sg5010 import TowerProSG5010
@@ -23,6 +24,7 @@ class Robot():
     LED1_CHANNEL = 1
 
     HOST_NAME = 'rpi.local'
+    # HOST_NAME = 'cromartie.local'
     PORT_NUMBER = 1234
 
     def __init__(self):
@@ -37,6 +39,7 @@ class Robot():
         self.led1 = Led(pwm, self.LED1_CHANNEL)
 
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.socket.bind((self.HOST_NAME, self.PORT_NUMBER))
         self.socket.listen(1)
         print('Ready.')
@@ -54,21 +57,29 @@ class Robot():
 
                 if command[0] == '0':
                     self.right_motor.set_speed(value)
+                    self.reply(data)
 
                 elif command[0] == '1':
                     self.left_motor.set_speed(value)
+                    self.reply(data)
 
                 elif command[0] == '2':
                     self.camera_motor.set_angle(value)
+                    self.reply(data)
 
                 elif command[0] == '3':
                     self.led1.set_brightness(value)
+                    self.reply(data)
 
                 elif command[0] == '4':
+                    self.reply(data)
                     break
 
             else:
                 break
+
+    def reply(self, data):
+        self.connection.send(data)
 
     def close_connection(self):
         self.connection.close()
