@@ -14,15 +14,18 @@ from helpers.servo_data import TowerProSG5010RightData, TowerProSG5010LeftData, 
 
 class Robot():
 
+    # PWM servo driver settings
     I2C_ADDRESS = 0x40
     FREQUENCY = 50
 
+    # PWM channels
     LEFT_MOTOR_CHANNEL = 0
     RIGHT_MOTOR_CHANNEL = 15
     CAMERA_MOTOR_CHANNEL = 7
 
     LED1_CHANNEL = 1
 
+    # Connection settings
     # HOST_NAME = 'rpi.local'
     HOST_NAME = 'cromartie.local'
     PORT_NUMBER = 1234
@@ -53,31 +56,19 @@ class Robot():
             data = self.connection.recv(self.BUFFER_SIZE)
 
             if data:
-                command = str(data).split()
-                value = int(command[1])
-
-                if command[0] == '0':
-                    self.right_motor.set_speed(value)
-                    self.reply(data)
-
-                elif command[0] == '1':
-                    self.left_motor.set_speed(value)
-                    self.reply(data)
-
-                elif command[0] == '2':
-                    self.camera_motor.set_angle(value)
-                    self.reply(data)
-
-                elif command[0] == '3':
-                    self.led1.set_brightness(value)
-                    self.reply(data)
-
-                elif command[0] == '4':
-                    self.reply(data)
-                    break
-
+                self.parse_data(data)
             else:
                 break
+
+    def parse_data(self, data):
+        commands = data.split("|")
+
+        try:
+            for command in commands:
+                channel, px, py = command[0], command[1], command[2]
+        except IndexError:
+            print("Exception: IndexError")
+            pass
 
     def reply(self, data):
         self.connection.send(data)
@@ -89,5 +80,9 @@ class Robot():
 
 
 robot = Robot()
-robot.main_loop()
+try:
+    robot.main_loop()
+except KeyboardInterrupt as interrupt:
+    print("Exception: KeyboardInterrupt")
+    pass
 robot.close_connection()
