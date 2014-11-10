@@ -65,9 +65,36 @@ class Robot():
 
         try:
             for command in commands:
-                channel, px, py = command[0], command[1], command[2]
+                if command:
+                    split_command = command.split(" ")
+                    command_type, px, py = split_command[0], split_command[1], split_command[2]
+                    self.execute_command(command_type, px, py)
+
         except IndexError:
-            print("Exception: IndexError")
+            print("parse_data - Exception: IndexError")
+            pass
+
+    def execute_command(self, command_type, px, py):
+        try:
+            command_type, px, py = int(command_type), int(px), int(py)
+
+            if command_type == 0:
+                print("Drive")
+
+            elif command_type == 1:
+                angle = int((py / 100.0) * 90.0)
+                print(angle)
+                self.camera_motor.set_angle(angle)
+
+            elif command_type == 2:
+                self.led1.set_brightness(py)
+
+        except TypeError:
+            print("execute_command - Exception: TypeError")
+            pass
+
+        except ValueError:
+            print("execute_command - Exception: ValueError")
             pass
 
     def reply(self, data):
@@ -83,6 +110,6 @@ robot = Robot()
 try:
     robot.main_loop()
 except KeyboardInterrupt as interrupt:
-    print("Exception: KeyboardInterrupt")
+    print("main_loop - Exception: KeyboardInterrupt")
     pass
 robot.close_connection()
