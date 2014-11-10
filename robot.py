@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
-from libraries.Adafruit_PWM_Servo_Driver import PWM
-# from mock_objects.pwm_mock import PWM
+# from libraries.Adafruit_PWM_Servo_Driver import PWM
+from mock_objects.pwm_mock import PWM
 import socket
 
 from pwm_objects.tower_pro_sg5010 import TowerProSG5010
@@ -23,9 +23,10 @@ class Robot():
 
     LED1_CHANNEL = 1
 
-    HOST_NAME = 'rpi.local'
-    # HOST_NAME = 'cromartie.local'
+    # HOST_NAME = 'rpi.local'
+    HOST_NAME = 'cromartie.local'
     PORT_NUMBER = 1234
+    BUFFER_SIZE = 1024
 
     def __init__(self):
         pwm = PWM(self.I2C_ADDRESS)
@@ -49,7 +50,7 @@ class Robot():
 
     def main_loop(self):
         while True:
-            data = self.connection.recv(1024)
+            data = self.connection.recv(self.BUFFER_SIZE)
 
             if data:
                 command = str(data).split()
