@@ -2,7 +2,7 @@
 
 # from libraries.Adafruit_PWM_Servo_Driver import PWM
 from mock_objects.pwm_mock import PWM
-import socket
+import socket, math
 
 from pwm_objects.tower_pro_sg5010 import TowerProSG5010
 from pwm_objects.tower_pro_sg90 import TowerProSG90
@@ -79,11 +79,10 @@ class Robot():
             command_type, px, py = int(command_type), int(px), int(py)
 
             if command_type == 0:
-                print("Drive")
+                self.set_motors_speed(px, py)
 
             elif command_type == 1:
                 angle = int((py / 100.0) * 90.0)
-                print(angle)
                 self.camera_motor.set_angle(angle)
 
             elif command_type == 2:
@@ -96,6 +95,21 @@ class Robot():
         except ValueError:
             print("execute_command - Exception: ValueError")
             pass
+
+    def set_motors_speed(self, px, py):
+        distance = math.sqrt(px**2 + py**2)
+
+        if px > 0:
+            right_speed = py
+            left_speed = distance if py > 0 else -distance
+        else:
+            right_speed = distance if py > 0 else -distance
+            left_speed = py
+
+        self.right_motor.set_speed(int(right_speed))
+        self.left_motor.set_speed(int(left_speed))
+
+        print("Right: {}, Left: {}".format(int(right_speed), int(left_speed)))
 
     def reply(self, data):
         self.connection.send(data)
