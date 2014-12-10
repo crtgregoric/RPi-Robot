@@ -4,6 +4,8 @@ from libraries.Adafruit_PWM_Servo_Driver import PWM
 # from mock_objects.pwm_mock import PWM
 import socket
 import math
+import os
+import time
 
 from pwm_objects.tower_pro_sg5010 import TowerProSG5010
 from pwm_objects.tower_pro_sg90 import TowerProSG90
@@ -56,10 +58,14 @@ class Robot():
         (self.connection, self.client_address) = self.socket.accept()
         print('Connected by: {}'.format(self.client_address[0]))
 
+        self.start_video_stream()
+
     def reply(self, data):
         self.connection.send(data)
 
     def close_connection(self):
+        self.stop_video_stream()
+
         if self.connection:
             self.connection.close()
 
@@ -73,9 +79,12 @@ class Robot():
 
     def start_video_stream(self):
         print('Starting video stream')
+        os.system('sh start_stream.sh > /dev/null 2>&1 &')
 
     def stop_video_stream(self):
         print('Stopping video stream')
+        os.system('pkill gst-launch-1.0')
+        os.system('pkill raspivid')
 
     def main_loop(self):
         while True:
@@ -85,6 +94,7 @@ class Robot():
                 self.parse_data(data)
             else:
                 self.close_connection()
+                time.sleep(2)
                 self.initialize_socket()
 
     def parse_data(self, data):
