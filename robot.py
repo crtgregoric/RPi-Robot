@@ -148,10 +148,16 @@ class Robot():
 
         print('Right: {}, Left: {}'.format(int(right_speed), int(left_speed)))
 
-robot = Robot()
+robot = None
 try:
+    robot = Robot()
     robot.main_loop()
+
 except KeyboardInterrupt as interrupt:
+
     print('main_loop - Exception: KeyboardInterrupt')
-    robot.close_connection()
+
+    if robot:
+        robot.close_connection()
+
     pass
