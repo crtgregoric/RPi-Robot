@@ -56,6 +56,27 @@ class Robot():
         (self.connection, self.client_address) = self.socket.accept()
         print('Connected by: {}'.format(self.client_address[0]))
 
+    def reply(self, data):
+        self.connection.send(data)
+
+    def close_connection(self):
+        if self.connection:
+            self.connection.close()
+
+        if self.socket:
+            self.socket.close()
+
+        if self.client_address:
+            print('Connection to client {} closed.\n'.format(self.client_address[0]))
+
+        self.socket, self.connection, self.client_address = None, None, None
+
+    def start_video_stream(self):
+        print('Starting video stream')
+
+    def stop_video_stream(self):
+        print('Stopping video stream')
+
     def main_loop(self):
         while True:
             data = self.connection.recv(self.BUFFER_SIZE)
@@ -67,17 +88,17 @@ class Robot():
                 self.initialize_socket()
 
     def parse_data(self, data):
-        commands = data.split("|")
+        commands = data.split('|')
 
         try:
             for command in commands:
                 if command:
-                    split_command = command.split(" ")
+                    split_command = command.split(' ')
                     command_type, px, py = split_command[0], split_command[1], split_command[2]
                     self.execute_command(command_type, px, py)
 
         except IndexError:
-            print("parse_data - Exception: IndexError")
+            print('parse_data - Exception: IndexError')
             pass
 
     def execute_command(self, command_type, px, py):
@@ -95,11 +116,11 @@ class Robot():
                 self.led1.set_brightness(py)
 
         except TypeError:
-            print("execute_command - Exception: TypeError")
+            print('execute_command - Exception: TypeError')
             pass
 
         except ValueError:
-            print("execute_command - Exception: ValueError")
+            print('execute_command - Exception: ValueError')
             pass
 
     def set_motors_speed(self, px, py):
@@ -115,27 +136,12 @@ class Robot():
         self.right_motor.set_speed(int(right_speed))
         self.left_motor.set_speed(int(left_speed))
 
-        print("Right: {}, Left: {}".format(int(right_speed), int(left_speed)))
-
-    def reply(self, data):
-        self.connection.send(data)
-
-    def close_connection(self):
-        if self.connection:
-            self.connection.close()
-
-        if self.socket:
-            self.socket.close()
-
-        if self.client_address:
-            print('Connection to client {} closed.\n'.format(self.client_address[0]))
-
-        self.socket, self.connection, self.client_address = None, None, None
+        print('Right: {}, Left: {}'.format(int(right_speed), int(left_speed)))
 
 robot = Robot()
 try:
     robot.main_loop()
 except KeyboardInterrupt as interrupt:
-    print("main_loop - Exception: KeyboardInterrupt")
+    print('main_loop - Exception: KeyboardInterrupt')
     robot.close_connection()
     pass
