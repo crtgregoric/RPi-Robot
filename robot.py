@@ -1,8 +1,9 @@
 #!/usr/bin/python
 
-# from libraries.Adafruit_PWM_Servo_Driver import PWM
-from mock_objects.pwm_mock import PWM
-import socket, math
+from libraries.Adafruit_PWM_Servo_Driver import PWM
+# from mock_objects.pwm_mock import PWM
+import socket
+import math
 
 from pwm_objects.tower_pro_sg5010 import TowerProSG5010
 from pwm_objects.tower_pro_sg90 import TowerProSG90
@@ -26,8 +27,8 @@ class Robot():
     LED1_CHANNEL = 1
 
     # Connection settings
-    # HOST_NAME = 'rpi.local'
-    HOST_NAME = 'cromartie.local'
+    HOST_NAME = 'rpi.local'
+    # HOST_NAME = 'cromartie.local'
     PORT_NUMBER = 1234
     BUFFER_SIZE = 1024
 
@@ -42,11 +43,15 @@ class Robot():
 
         self.led1 = Led(pwm, self.LED1_CHANNEL)
 
+        self.socket, self.connection, self.client_address = None, None, None
+        self.initialize_socket()
+
+    def initialize_socket(self):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.socket.bind((self.HOST_NAME, self.PORT_NUMBER))
         self.socket.listen(1)
-        print('Ready.')
+        print('Listening for connections.')
 
         (self.connection, self.client_address) = self.socket.accept()
         print('Connected by: {}'.format(self.client_address[0]))
@@ -58,7 +63,8 @@ class Robot():
             if data:
                 self.parse_data(data)
             else:
-                break
+                self.close_connection()
+                self.initialize_socket()
 
     def parse_data(self, data):
         commands = data.split("|")
@@ -115,15 +121,21 @@ class Robot():
         self.connection.send(data)
 
     def close_connection(self):
-        self.connection.close()
-        self.socket.close()
-        print('Connection closed.')
+        if self.connection:
+            self.connection.close()
 
+        if self.socket:
+            self.socket.close()
+
+        if self.client_address:
+            print('Connection to client {} closed.\n'.format(self.client_address[0]))
+
+        self.socket, self.connection, self.client_address = None, None, None
 
 robot = Robot()
 try:
     robot.main_loop()
 except KeyboardInterrupt as interrupt:
     print("main_loop - Exception: KeyboardInterrupt")
+    robot.close_connection()
     pass
-robot.close_connection()
