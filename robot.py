@@ -154,10 +154,7 @@ try:
     robot.main_loop()
 
 except KeyboardInterrupt as interrupt:
-
-    print('main_loop - Exception: KeyboardInterrupt')
-
+    print('\nmain_loop - Exception: KeyboardInterrupt\n')
     if robot:
         robot.close_connection()
-
     pass
