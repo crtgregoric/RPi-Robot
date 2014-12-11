@@ -27,6 +27,10 @@ class Robot():
     CAMERA_MOTOR_CHANNEL = 7
 
     LED1_CHANNEL = 1
+    LED2_CHANNEL = 2
+    LED3_CHANNEL = 3
+    LED4_CHANNEL = 4
+    LED5_CHANNEL = 5
 
     # Connection settings
     HOST_NAME = 'rpi.local'
@@ -45,6 +49,12 @@ class Robot():
         self.camera_motor = TowerProSG90(pwm, self.CAMERA_MOTOR_CHANNEL, TowerProSG90Data, True)
 
         self.led1 = Led(pwm, self.LED1_CHANNEL)
+        self.led2 = Led(pwm, self.LED2_CHANNEL)
+        self.led3 = Led(pwm, self.LED3_CHANNEL)
+        self.led4 = Led(pwm, self.LED4_CHANNEL)
+        self.led5 = Led(pwm, self.LED5_CHANNEL)
+
+        self.led_array = [self.led3, self.led2, self.led4, self.led1, self.led5]
 
         self.socket, self.connection, self.client_address = None, None, None
         self.initialize_socket()
@@ -125,7 +135,11 @@ class Robot():
                 self.camera_motor.set_angle(angle)
 
             elif command_type == 2:
-                self.led1.set_brightness(px)
+                if py == 0:
+                    self.set_led_brightness(0, len(self.led_array))
+
+                else:
+                    self.set_led_brightness(px, py)
 
         except TypeError:
             print('execute_command - Exception: TypeError')
@@ -149,6 +163,14 @@ class Robot():
         self.left_motor.set_speed(int(left_speed))
 
         print('Right: {}, Left: {}'.format(int(right_speed), int(left_speed)))
+
+    def set_led_brightness(self, brightness, number):
+        if number > len(self.led_array):
+            number = len(self.led_array)
+
+        for i in range(0, number):
+            self.led_array[i].set_brightness(brightness)
+
 
 robot = None
 
