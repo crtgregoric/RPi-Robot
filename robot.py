@@ -164,12 +164,24 @@ class Robot():
 
         print('Right: {}, Left: {}'.format(int(right_speed), int(left_speed)))
 
-    def set_led_brightness(self, brightness, number):
-        if number > len(self.led_array):
+    def set_led_brightness(self, brightness, led_state):
+        if led_state == 0:
+            number = 0
+
+        elif led_state == 1:
+            number = 1
+
+        elif led_state == 2:
+            number = 3
+
+        else:
             number = len(self.led_array)
 
-        for i in range(0, number):
+        for i in range(number):
             self.led_array[i].set_brightness(brightness)
+
+        for i in range(number, len(self.led_array)):
+            self.led_array[i].set_brightness(0)
 
 
 robot = None
