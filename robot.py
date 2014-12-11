@@ -31,12 +31,13 @@ class Robot():
     # Connection settings
     HOST_NAME = 'rpi.local'
     # HOST_NAME = 'cromartie.local'
-    PORT_NUMBER = 1234
+    PORT_NUMBER = 6000
     BUFFER_SIZE = 1024
 
     def __init__(self):
         pwm = PWM(self.I2C_ADDRESS)
         pwm.setPWMFreq(self.FREQUENCY)
+        self.pwm = pwm
 
         self.right_motor = TowerProSG5010(pwm, self.RIGHT_MOTOR_CHANNEL, TowerProSG5010RightData, MotorPosition.RIGHT)
         self.left_motor = TowerProSG5010(pwm, self.LEFT_MOTOR_CHANNEL, TowerProSG5010LeftData, MotorPosition.LEFT)
@@ -76,6 +77,7 @@ class Robot():
             print('Connection to client {} closed.\n'.format(self.client_address[0]))
 
         self.socket, self.connection, self.client_address = None, None, None
+        self.pwm.setAllPWM(0, 0)
 
     def start_video_stream(self):
         print('Starting video stream')
@@ -123,7 +125,7 @@ class Robot():
                 self.camera_motor.set_angle(angle)
 
             elif command_type == 2:
-                self.led1.set_brightness(py)
+                self.led1.set_brightness(px)
 
         except TypeError:
             print('execute_command - Exception: TypeError')
@@ -149,6 +151,7 @@ class Robot():
         print('Right: {}, Left: {}'.format(int(right_speed), int(left_speed)))
 
 robot = None
+
 try:
     robot = Robot()
     robot.main_loop()
