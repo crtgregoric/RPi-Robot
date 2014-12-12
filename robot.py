@@ -3,8 +3,6 @@
 from libraries.Adafruit_PWM_Servo_Driver import PWM
 # from mock_objects.pwm_mock import PWM
 import socket
-import math
-import os
 import time
 
 from pwm_objects.tower_pro_sg5010 import TowerProSG5010
@@ -89,14 +87,16 @@ class Robot():
         self.socket, self.connection, self.client_address = None, None, None
         self.pwm.setAllPWM(0, 0)
 
-    def start_video_stream(self):
+    @staticmethod
+    def start_video_stream():
         print('Starting video stream')
-        os.system('sh start_stream.sh > /dev/null 2>&1 &')
+        # os.system('sh start_stream.sh > /dev/null 2>&1 &')
 
-    def stop_video_stream(self):
+    @staticmethod
+    def stop_video_stream():
         print('Stopping video stream')
-        os.system('pkill gst-launch-1.0')
-        os.system('pkill raspivid')
+        # os.system('pkill gst-launch-1.0')
+        # os.system('pkill raspivid')
 
     def main_loop(self):
         while True:
@@ -128,7 +128,9 @@ class Robot():
             command_type, px, py = int(command_type), int(px), int(py)
 
             if command_type == 0:
-                self.set_motors_speed(px, py)
+                self.left_motor.set_speed(px)
+                self.right_motor.set_speed(py)
+                print('Left: {}, Right: {}'.format(px, py))
 
             elif command_type == 1:
                 angle = int((py / 100.0) * 90.0)
@@ -148,21 +150,6 @@ class Robot():
         except ValueError:
             print('execute_command - Exception: ValueError')
             pass
-
-    def set_motors_speed(self, px, py):
-        distance = math.sqrt(px**2 + py**2)
-
-        if px > 0:
-            right_speed = py
-            left_speed = distance if py > 0 else -distance
-        else:
-            right_speed = distance if py > 0 else -distance
-            left_speed = py
-
-        self.right_motor.set_speed(int(right_speed))
-        self.left_motor.set_speed(int(left_speed))
-
-        print('Right: {}, Left: {}'.format(int(right_speed), int(left_speed)))
 
     def set_led_brightness(self, brightness, led_state):
         if led_state == 0:
