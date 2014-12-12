@@ -5,6 +5,7 @@ from libraries.Adafruit_PWM_Servo_Driver import PWM
 import socket
 import time
 import os
+import sys
 
 from pwm_objects.tower_pro_sg5010 import TowerProSG5010
 from pwm_objects.tower_pro_sg90 import TowerProSG90
@@ -31,6 +32,8 @@ class Robot():
     LED4_CHANNEL = 4
     LED5_CHANNEL = 5
 
+    STATUS_LED_CHANNEL = 8
+
     # Connection settings
     HOST_NAME = 'rpi.local'
     # HOST_NAME = 'cromartie.local'
@@ -55,6 +58,9 @@ class Robot():
 
         self.led_array = [self.led3, self.led2, self.led4, self.led1, self.led5]
 
+        self.status_led = Led(pwm, self.STATUS_LED_CHANNEL)
+        self.status_led.set_brightness(100)
+
         self.socket, self.connection, self.client_address = None, None, None
         self.initialize_socket()
 
@@ -62,6 +68,8 @@ class Robot():
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.socket.bind((self.HOST_NAME, self.PORT_NUMBER))
+
+    def listen_for_connections(self):
         self.socket.listen(1)
         print('Listening for connections.')
 
@@ -87,6 +95,7 @@ class Robot():
 
         self.socket, self.connection, self.client_address = None, None, None
         self.pwm.setAllPWM(0, 0)
+        self.status_led.set_brightness(100)
 
     @staticmethod
     def start_video_stream():
@@ -109,6 +118,7 @@ class Robot():
                 self.close_connection()
                 time.sleep(2)
                 self.initialize_socket()
+                self.listen_for_connections()
 
     def parse_data(self, data):
         commands = data.split('|')
@@ -171,15 +181,24 @@ class Robot():
         for i in range(number, len(self.led_array)):
             self.led_array[i].set_brightness(0)
 
+    def shut_down(self):
+        self.close_connection()
+        self.status_led.set_brightness(0)
+        self.pwm.setAllPWM(0, 0)
 
-robot = None
+
+robot = Robot()
 
 try:
-    robot = Robot()
+    robot.listen_for_connections()
     robot.main_loop()
 
 except KeyboardInterrupt as interrupt:
     print('\nmain_loop - Exception: KeyboardInterrupt\n')
-    if robot:
-        robot.close_connection()
+    robot.shut_down()
     pass
+
+except:
+    print(sys.exc_info()[0])
+    robot.shut_down()
+    raise
