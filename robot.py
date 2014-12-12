@@ -4,6 +4,7 @@ from libraries.Adafruit_PWM_Servo_Driver import PWM
 # from mock_objects.pwm_mock import PWM
 import socket
 import time
+import os
 
 from pwm_objects.tower_pro_sg5010 import TowerProSG5010
 from pwm_objects.tower_pro_sg90 import TowerProSG90
@@ -90,13 +91,13 @@ class Robot():
     @staticmethod
     def start_video_stream():
         print('Starting video stream')
-        # os.system('sh start_stream.sh > /dev/null 2>&1 &')
+        os.system('sh start_stream.sh > /dev/null 2>&1 &')
 
     @staticmethod
     def stop_video_stream():
         print('Stopping video stream')
-        # os.system('pkill gst-launch-1.0')
-        # os.system('pkill raspivid')
+        os.system('pkill gst-launch-1.0')
+        os.system('pkill raspivid')
 
     def main_loop(self):
         while True:
