@@ -100,7 +100,8 @@ class Robot():
     @staticmethod
     def start_video_stream():
         print('Starting video stream')
-        os.system('sh start_stream.sh > /dev/null 2>&1 &')
+        # os.system('sh start_stream.sh > /dev/null 2>&1 &')
+        os.system('sh `raspivid -t 0 -h 320 -w 480 -fps 25 -b 2000000 -o - | gst-launch-1.0 -v fdsrc ! h264parse ! rtph264pay config-interval=1 pt=96 ! gdppay ! tcpserversink host=rpi.local port=5000` > /dev/null 2>&1 &')
 
     @staticmethod
     def stop_video_stream():
