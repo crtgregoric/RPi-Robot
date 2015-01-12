@@ -155,6 +155,11 @@ class Robot():
                 else:
                     self.set_led_brightness(px, py)
 
+            elif command_type == 3:
+                self.close_connection()
+                print('shutdown')
+                os.system('sudo shutdown -h now')
+
         except TypeError:
             print('execute_command - Exception: TypeError')
             pass
